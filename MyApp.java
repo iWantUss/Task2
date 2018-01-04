@@ -33,7 +33,11 @@ public class MyApp implements DataConnection {
     private static int COUNT1 = 0;
     protected static int startYear = 1990;
     protected static int endYear = 2020;
+    
+    
     /**
+     * Предполагаю, что этот код написан в другом месте и изменять его не нужно.
+     * <small>надеюсь...</small>
      * @param args
      */
     public static void main(String[] args) {
