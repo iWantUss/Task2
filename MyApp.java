@@ -1,9 +1,7 @@
-import java.io.File;
-
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 interface DataConnection {
 
@@ -24,9 +22,9 @@ public class MyApp implements DataConnection {
     }
 
     public MyApp(String y) {
-        this.y = y;
+        this.year = y;
     }
-    private String y;
+    private final String year;
     private static int COUNT = 0;
     private static int COUNT1 = 0;
     protected static int startYear = 1990;
@@ -55,43 +53,30 @@ public class MyApp implements DataConnection {
         }
     }
 
+    @Override
     public int loadDatas(int sum) throws Exception {
-        File file = new File("1.txt");
-        //try {
-        //FileOutputStream fis = new FileOutputStream(file);
-        FileInputStream fis = new FileInputStream(file);
-        String s = "";
-        int i = fis.read();
-        do {
-            s = s + new String(new byte[]{(byte) i});
-            i = fis.read();
-        } while (i != -1);
-        int begin = 0;
-        while (true) {
-            int e = s.indexOf("\n", begin + 1);
-            if (e == -1) {
-                break;
+        
+        String[] sourceList = Files.readAllLines(Paths.get("1.txt")).toArray(new String[0]);
+        
+        for (String line : sourceList) {
+            
+            String[] arrayNumbers = line.split("    ");
+            if (arrayNumbers[2].contains(this.year)) {
+                sum += Integer.parseInt(arrayNumbers[3]);
             }
-            String ss = s.substring(begin, e);
-            //System.out.println(ss);
-            String[] sss = ss.split("    ");
-            for (String string : sss) {
-                //System.out.println(string);
-            }
-            if (sss[2].contains(this.y) || sss[2].contains(y)) {
-                sum = sum + Integer.parseInt(sss[3]);
-            }
+            
             COUNT++;
-            begin = e;
         }
         return sum;
     }
 
+    @Override
     public void saveData(int year, int qq) throws IOException {
-        FileOutputStream fis = new FileOutputStream(new File("statistika.txt"), true);
-        String s = new String();
-        s = COUNT1 + "    " + year + "    " + qq + "\n";
-        fis.write(s.getBytes());
+                
+        String resultLine = COUNT1 + "    " + year + "    " + qq + "\n";
+        Files.write(Paths.get("statistika.txt"), resultLine.getBytes(),
+                    StandardOpenOption.APPEND,
+                    StandardOpenOption.CREATE);
         COUNT1++;
     }
 }
