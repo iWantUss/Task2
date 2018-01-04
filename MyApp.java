@@ -2,21 +2,25 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-
+/**
+ * Интерфейс для работы с файлами (чтение|запись).
+ */
 interface DataConnection {
-
+    /**
+     * @throws Exception если файл не найден или его формат некорректен
+     */
     int loadDatas(int sum) throws Exception;
-
+    /**
+     * @throws IOException выбросит, если произойдет ошибка при записи в файл
+     */
     void saveData(int year, int qq) throws IOException;
 }
 
 public class MyApp implements DataConnection {
 
-
-
     public static class MyAppFactory {
 
-        public static MyApp create(String y) {
+        public MyApp create(String y) {
             return new MyApp(y);
         }
     }
@@ -52,7 +56,16 @@ public class MyApp implements DataConnection {
             System.out.println("oshibka!");
         }
     }
-
+    /**
+     * Возвращает сумму всех значений из 4 столбца в файле 1.txt за текущий год
+     * <ol>
+     * <li>Получает данные из файла 1.txt</li>
+     * <li>Разделяет каждую строку на столбцы по "    "</li>
+     * <li>Если {@see MyApp#year год}(3 столбец в файле) совпадает, то значение из 4 столбца прибавляется к результату</li>
+     * </ol>
+     * @param sum сумма на начало года
+     * @return сумму всех значений из 4 столбца за текущий год
+     */
     @Override
     public int loadDatas(int sum) throws Exception {
         
@@ -69,11 +82,15 @@ public class MyApp implements DataConnection {
         }
         return sum;
     }
-
+    /**
+     * Записывает статистику за текущий год в файл statistika.txt
+     * @param year текущий год
+     * @param quantityQuality количество/качество
+     */
     @Override
-    public void saveData(int year, int qq) throws IOException {
+    public void saveData(int year, int quantityQuality) throws IOException {
                 
-        String resultLine = COUNT1 + "    " + year + "    " + qq + "\n";
+        String resultLine = COUNT1 + "    " + year + "    " + quantityQuality + "\n";
         Files.write(Paths.get("statistika.txt"), resultLine.getBytes(),
                     StandardOpenOption.APPEND,
                     StandardOpenOption.CREATE);
